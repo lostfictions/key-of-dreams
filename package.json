@@ -1,0 +1,30 @@
+{
+  "name": "wipfilmsscraper",
+  "author": "lostfictions <https://github.com/lostfictions>",
+  "version": "1.0.0",
+  "private": true,
+  "description": "",
+  "main": "dist/main.js",
+  "scripts": {
+    "dev": "ts-node-dev --respawn --transpileOnly --notify=false src/main.ts",
+    "build": "tsc",
+    "start": "node dist/main.js",
+    "clean": "rm -rf dist/"
+  },
+  "license": "AGPL-3.0",
+  "dependencies": {
+    "canvas": "^2.5.0",
+    "envalid": "^5.0.0",
+    "source-map-support": "^0.5.8"
+  },
+  "devDependencies": {
+    "@types/node": "^12.0.1",
+    "@typescript-eslint/eslint-plugin": "^1.8.0",
+    "@typescript-eslint/parser": "^1.8.0",
+    "eslint": "^5.16.0",
+    "eslint-config-prettier": "^4.1.0",
+    "prettier": "^1.17.0",
+    "ts-node-dev": "^1.0.0-pre.39",
+    "typescript": "^3.4.4"
+  }
+}
