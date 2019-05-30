@@ -1,4 +1,4 @@
 PATH=/usr/local/bin:/usr/bin:/bin
 SHELL=/bin/bash
 
-* * * * * yarn --cwd /code start > /proc/$(cat /var/run/crond.pid)/fd/1 2>&1
+30 3,7,11,15,19,23 * * * yarn --cwd /code start > /proc/$(cat /var/run/crond.pid)/fd/1 2>&1
