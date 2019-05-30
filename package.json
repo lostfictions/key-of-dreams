@@ -6,15 +6,17 @@
   "description": "",
   "main": "dist/main.js",
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpileOnly --notify=false src/main.ts",
-    "build": "tsc",
     "start": "node dist/main.js",
+    "start-local": "node dist/main.js local",
+    "dev": "ts-node-dev --respawn --transpileOnly --notify=false src/main.ts -- local",
+    "build": "tsc",
     "clean": "rm -rf dist/"
   },
   "license": "AGPL-3.0",
   "dependencies": {
     "canvas": "^2.5.0",
     "envalid": "^5.0.0",
+    "masto": "^2.1.0",
     "source-map-support": "^0.5.8"
   },
   "devDependencies": {
