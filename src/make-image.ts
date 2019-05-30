@@ -99,5 +99,5 @@ export async function makeImage() {
     out.on("error", e => rej(e));
   });
 
-  return { filename, caption: captions.join("/") };
+  return { filename, caption: captions.join(" / ") };
 }
