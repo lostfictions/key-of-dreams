@@ -20,8 +20,7 @@ async function doToot(): Promise<void> {
     description: caption
   });
 
-  // FIXME: bad typings
-  const status: any = await masto.createStatus({
+  const status = await masto.createStatus({
     status: "",
     visibility: "public",
     media_ids: [id]

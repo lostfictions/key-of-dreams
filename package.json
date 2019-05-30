@@ -16,7 +16,7 @@
   "dependencies": {
     "canvas": "^2.5.0",
     "envalid": "^5.0.0",
-    "masto": "^2.1.0",
+    "masto": "^2.1.1",
     "source-map-support": "^0.5.8"
   },
   "devDependencies": {
