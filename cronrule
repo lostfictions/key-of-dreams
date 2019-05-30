@@ -1,1 +1,4 @@
-* * * * * root npm start --prefix /code > /proc/1/fd/1 2>/proc/1/fd/21
+PATH=/usr/local/bin:/usr/bin:/bin
+SHELL=/bin/bash
+
+* * * * * yarn --cwd /code start > /proc/$(cat /var/run/crond.pid)/fd/1 2>&1

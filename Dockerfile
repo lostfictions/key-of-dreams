@@ -5,7 +5,7 @@ MAINTAINER s
 WORKDIR /code
 
 # https://stackoverflow.com/questions/37458287/how-to-run-a-cron-job-inside-a-docker-container
-RUN apt-get -y install -qq --force-yes cron
+RUN apt-get update && apt-get -y install -qq cron && apt-get clean
 COPY cronrule /etc/cron.d/mastobot
 RUN chmod +x /etc/cron.d/mastobot && crontab /etc/cron.d/mastobot
 
@@ -17,4 +17,4 @@ RUN yarn build
 
 ENV NODE_ENV=production
 ENV DEBUG=*
-CMD ["cron", "-f"]
+ENTRYPOINT ["sh", "run.sh"]

@@ -8,10 +8,9 @@ export const {
 } = envalid.cleanEnv(
   process.env,
   {
-    // The resource dir is currently checked in to the repo, but that may change
-    // in the future
+    // The resource dir is currently checked in to the repo.
     RESOURCE_DIR: envalid.str({
-      devDefault: path.join(__dirname, "..", "resources")
+      default: path.join(__dirname, "..", "resources")
     }),
     MASTODON_SERVER: envalid.url({ default: "https://botsin.space/" }),
     MASTODON_TOKEN: envalid.str()
