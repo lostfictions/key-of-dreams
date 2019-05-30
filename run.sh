@@ -10,14 +10,14 @@ if [ "$#" -lt 1 ]; then
 fi
 
 if [[ -z "${CRON_RULE-}" ]]; then
-    echo "CRON_RULE not set in environment, using default rule ($DEFAULT_CRON_RULE)"
+  echo "CRON_RULE not set in environment, using default rule ($DEFAULT_CRON_RULE)"
 fi
 
 CRONFILE='/etc/cron.d/mastobot'
 
 # even though we dump the environment (which should include PATH) later in this
-# script, cron seems to have trouble finding the command unless we prepend the
-# file with this.
+# script, cron seems to have trouble finding things unless we prepend the file
+# with this.
 echo 'PATH=/usr/local/bin:/usr/bin:/bin' > $CRONFILE
 
 # the spooky stuff at the end is to convince cron to redirect stdout/stderr even
@@ -33,7 +33,7 @@ crontab $CRONFILE
 # cron doesn't have access to our container environment variables by default, so
 # we just dump them to /etc/environment, as suggested here:
 # https://stackoverflow.com/a/41938139
-# this may pose some security concerns somehow or might pollute the environment
+# this may pose some security concerns somehow, or might pollute the environment
 # for other commands, caveat emptor, etc etc.
 printenv >> /etc/environment
 
