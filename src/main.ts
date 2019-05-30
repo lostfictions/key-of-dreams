@@ -20,13 +20,14 @@ async function doToot(): Promise<void> {
     description: caption
   });
 
-  const data = await masto.createStatus({
+  // FIXME: bad typings
+  const status: any = await masto.createStatus({
     status: "",
     visibility: "public",
     media_ids: [id]
   });
 
-  console.log(data);
+  console.log(`${status.created_at} -> ${status.uri}`);
 }
 
 const argv = process.argv.slice(2);
