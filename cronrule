@@ -1,0 +1,1 @@
+30 3,7,11,15,19,23 * * * root npm start --prefix /code > /proc/1/fd/1 2>/proc/1/fd/21
