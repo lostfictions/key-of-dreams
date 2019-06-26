@@ -24,7 +24,7 @@ async function doToot(): Promise<void> {
     const { id } = await masto.uploadMediaAttachment({
       file: createReadStream(filename),
       description: caption,
-      focus: "0,0.9"
+      focus: "0,0.75"
     });
 
     const { created_at: time, uri: tootUri } = await masto.createStatus({
