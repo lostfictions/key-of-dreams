@@ -1,25 +1,46 @@
-import path from "path";
-import * as envalid from "envalid";
+/* eslint-disable node/no-process-env */
+import { join } from "path";
 
-export const {
-  RESOURCE_DIR,
-  MASTODON_SERVER,
-  MASTODON_TOKEN,
-  MASTODON_SERVER2,
-  MASTODON_TOKEN2
-} = envalid.cleanEnv(
+import * as Sentry from "@sentry/node";
+import { CaptureConsole } from "@sentry/integrations";
+import { parseEnv, z } from "znv";
+
+const isDev = process.env["NODE_ENV"] !== "production";
+
+if (isDev) {
+  require("dotenv").config();
+}
+
+export const { MASTODON_TOKEN, SENTRY_DSN, RESOURCE_DIR } = parseEnv(
   process.env,
   {
+    MASTODON_TOKEN: {
+      schema: z.string().min(1),
+      defaults: { development: "_" },
+    },
+    SENTRY_DSN: {
+      schema: z.string().min(1).optional(),
+    },
     // The resource dir is currently checked in to the repo.
-    RESOURCE_DIR: envalid.str({
-      default: path.join(__dirname, "..", "resources")
-    }),
-    MASTODON_SERVER: envalid.url({ default: "https://botsin.space/" }),
-    MASTODON_TOKEN: envalid.str(),
-    // HACK: not sure how best to generalize server/token pairs in env vars, or
-    // even whether this is generally desirable
-    MASTODON_SERVER2: envalid.url({ default: "" }),
-    MASTODON_TOKEN2: envalid.str({ default: "" })
+    RESOURCE_DIR: z
+      .string()
+      .min(1)
+      .default(() => join(__dirname, "..", "resources")),
   },
-  { strict: true }
 );
+
+export const MASTODON_SERVER = "https://botsin.space";
+
+if (!SENTRY_DSN && !isDev) {
+  console.warn(
+    `Sentry DSN is invalid! Error reporting to Sentry will be disabled.`,
+  );
+} else {
+  Sentry.init({
+    dsn: SENTRY_DSN,
+    environment: isDev ? "dev" : "prod",
+    integrations: [
+      new CaptureConsole({ levels: ["warn", "error", "debug", "assert"] }),
+    ],
+  });
+}

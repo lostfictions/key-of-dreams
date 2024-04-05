@@ -1,7 +1,6 @@
-import { tmpdir } from "os";
 import path from "path";
-import { readdirSync, createWriteStream } from "fs";
-import { createCanvas, loadImage, registerFont } from "canvas";
+import { readdirSync } from "fs";
+import { GlobalFonts, createCanvas, loadImage } from "@napi-rs/canvas";
 
 import { RESOURCE_DIR } from "./env";
 
@@ -10,19 +9,21 @@ const FONT_STYLE = "popsies";
 const X = 2;
 const Y = 2;
 
-const tmp = tmpdir();
-
 function pluck<T>(arr: T[]): T {
   const i = Math.floor(Math.random() * arr.length);
   return arr.splice(i, 1)[0];
 }
 
-registerFont(path.join(RESOURCE_DIR, FONT_FILENAME), { family: FONT_STYLE });
+GlobalFonts.registerFromPath(
+  path.join(RESOURCE_DIR, FONT_FILENAME),
+  FONT_STYLE,
+);
 
+// eslint-disable-next-line prefer-destructuring -- false pos, need type annotation
 const nouns: string[] = require(path.join(RESOURCE_DIR, "nouns.json")).nouns;
 
-const imagePaths = readdirSync(path.join(RESOURCE_DIR, "emoji")).map(f =>
-  path.join(RESOURCE_DIR, "emoji", f)
+const imagePaths = readdirSync(path.join(RESOURCE_DIR, "emoji")).map((f) =>
+  path.join(RESOURCE_DIR, "emoji", f),
 );
 
 const canvas = createCanvas(400, 600);
@@ -36,7 +37,7 @@ export async function makeImage() {
   const clonedNouns = [...nouns];
 
   const images = await Promise.all(
-    [...Array(X * Y)].map(() => loadImage(pluck(clonedPaths)))
+    [...Array(X * Y)].map(() => loadImage(pluck(clonedPaths))),
   );
 
   const captions = [...Array(X * Y)].map(() => `the ${pluck(clonedNouns)}`);
@@ -60,7 +61,9 @@ export async function makeImage() {
     fontSize -= 1;
     ctx.font = `${fontSize}px ${FONT_STYLE}`;
     if (fontSize < 1) throw new Error("node-canvas will never be satisfied");
-  } while (captions.some(t => ctx.measureText(t + "xx").width > imageBoxWidth));
+  } while (
+    captions.some((t) => ctx.measureText(`${t}xx`).width > imageBoxWidth)
+  );
 
   let iter = 0;
   for (let j = 0; j < Y; j++) {
@@ -70,13 +73,13 @@ export async function makeImage() {
         i * imageBoxWidth + 20,
         j * imageBoxHeight + 50,
         160,
-        160
+        160,
       );
 
       ctx.fillText(
         captions[iter],
         i * imageBoxWidth + 100,
-        j * imageBoxHeight + 255
+        j * imageBoxHeight + 255,
       );
 
       iter++;
@@ -85,19 +88,5 @@ export async function makeImage() {
 
   ctx.restore();
 
-  const filename = path.join(
-    tmp,
-    `key-of-dreams--${new Date().toISOString().replace(/:/g, "-")}.png`
-  );
-
-  const out = createWriteStream(filename);
-  const stream = canvas.createPNGStream();
-  stream.pipe(out);
-
-  await new Promise((res, rej) => {
-    out.on("finish", () => res());
-    out.on("error", e => rej(e));
-  });
-
-  return { filename, caption: captions.join(" / ") };
+  return { canvas, caption: captions.join(" / ") };
 }

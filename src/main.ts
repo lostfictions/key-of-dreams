@@ -1,60 +1,53 @@
-require("source-map-support").install();
-
-import { createReadStream } from "fs";
-import Masto from "masto";
+import { join } from "path";
+import { tmpdir } from "os";
+import { writeFile } from "fs/promises";
+import { twoot } from "twoot";
 
 import { makeImage } from "./make-image";
 
-import {
-  MASTODON_SERVER,
-  MASTODON_TOKEN,
-  MASTODON_SERVER2,
-  MASTODON_TOKEN2
-} from "./env";
+import { MASTODON_SERVER, MASTODON_TOKEN } from "./env";
 
 async function doToot(): Promise<void> {
-  const { filename, caption } = await makeImage();
+  const { canvas, caption } = await makeImage();
 
-  const tootOne = async (uri: string, accessToken: string) => {
-    const masto = await Masto.login({
-      uri,
-      accessToken
-    });
+  const buffer = canvas.toBuffer("image/png");
 
-    const { id } = await masto.uploadMediaAttachment({
-      file: createReadStream(filename),
-      description: caption,
-      focus: "0,0.75"
-    });
-
-    const { created_at: time, uri: tootUri } = await masto.createStatus({
+  const res = await twoot(
+    {
       status: "",
-      visibility: "public",
-      media_ids: [id]
-    });
+      media: [{ buffer, caption }],
+    },
+    {
+      type: "mastodon",
+      server: MASTODON_SERVER,
+      token: MASTODON_TOKEN,
+    },
+  );
 
-    return { time, tootUri };
-  };
-
-  const toots = [tootOne(MASTODON_SERVER, MASTODON_TOKEN)];
-
-  if (MASTODON_SERVER2.length > 0 && MASTODON_TOKEN2.length > 0) {
-    toots.push(tootOne(MASTODON_SERVER2, MASTODON_TOKEN2));
-  }
-
-  const res = await Promise.all(toots);
-
-  console.log(res.map(l => `${l.time} -> ${l.tootUri}`).join("\n"));
+  console.log(res.status.url);
 }
 
 const argv = process.argv.slice(2);
 
 if (argv.includes("local")) {
   console.log("Running locally!");
-  makeImage().then(async ({ filename, caption }) => {
+  (async () => {
+    const { canvas, caption } = await makeImage();
+    const buffer = canvas.toBuffer("image/png");
+
+    const filename = join(
+      tmpdir(),
+      `key-of-dreams--${new Date().toISOString().replaceAll(/:|\./g, "-")}.png`,
+    );
+
+    await writeFile(filename, buffer);
+
     console.log(`${caption}\nfile://${filename}\n`);
-    process.exit(0);
+  })().catch((e) => {
+    throw e;
   });
 } else {
-  doToot().then(() => process.exit(0));
+  doToot().catch((e) => {
+    throw e;
+  });
 }

@@ -1,0 +1,24 @@
+name: twoot on a schedule
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "6 1,4,7,10,13,16,19,22 * * *"
+
+jobs:
+  scheduled:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@ebcfd6995dade4b0104ac774445cef8b3b4635b0
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: ".node-version"
+          cache: "pnpm"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: pnpm start
+        env:
+          NODE_ENV: "production"
+          MASTODON_TOKEN: ${{ secrets.MASTODON_TOKEN }}
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
