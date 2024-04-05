@@ -6,7 +6,7 @@ a bot that generates emoji magrittes.
 
 this is a bot that generates images and posts them to mastodon ~~and twitter~~. it's written in [typescript](https://www.typescriptlang.org/) and runs on [node.js](http://nodejs.org/).
 
-you can run it on your computer or remix it into something new! you'll need node and git installed. if you install node manually, you should match the node version listed in [the `.node-version`](.node-version) file — but instead of installing node directly i recommend using [fnm](https://github.com/Schniz/fnm), which can automatically handle installing and switching node versions by detecting `.node-version` files.
+you can run it on your computer and even remix it into something new! you'll need node and git installed. if you install node manually, you should match the node version listed in [the `.node-version`](.node-version) file — but instead of installing node directly i recommend using [fnm](https://github.com/Schniz/fnm), which can automatically handle installing and switching node versions by detecting `.node-version` files.
 
 once you're set, run:
 
@@ -18,14 +18,14 @@ pnpm install
 pnpm dev
 ```
 
-in a server environment, this bot can be run with [docker](https://docs.docker.com/) for an easier time. (i recommend [dokku](http://dokku.viewdocs.io/dokku/) if you're looking for a nice way to develop and host bots.)
+running `pnpm dev` will generate an image and save it to a file on your computer. when posting to the internet, this bot runs using github actions' [scheduled events](https://docs.github.com/en/actions/reference/events-that-trigger-workflows#scheduled-events). check out the [workflow file](.github/workflows/twoot.yml) for more details.
 
-running `pnpm dev` will generate images locally, but the bot needs environment variables if you want it to post to the internet:
+if you clone the repository you can run your own remixed version that posts to mastodon using github actions too! no need to edit the workflow file — you'll just need to set some environment variables in the github repository settings:
 
 - `MASTODON_TOKEN`: a Mastodon user API token (required)
 - `MASTODON_SERVER`: the instance to which API calls should be made (usually where the bot user lives.) (default: https://botsin.space/)
 - `RESOURCE_DIR`: the directory to search for image and font data. (default: the images already checked in to the repo.)
 
-this bot uses [dotenv](https://github.com/motdotla/dotenv), so you can alternately stick any of the above environment variables in a file named `.env` in the project root. (it's gitignored, so there's no risk of accidentally committing private API tokens you put in there.)
+this bot uses [dotenv](https://github.com/motdotla/dotenv), so if you're testing things locally, you can stick any of the above environment variables in a file named `.env` in the project root. (it's gitignored, so there's no risk of accidentally committing private API tokens you put in there.)
 
 ###### [more bots?](https://github.com/lostfictions?tab=repositories&q=botally)
