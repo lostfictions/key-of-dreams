@@ -2,9 +2,13 @@
 
 a bot that generates emoji magrittes.
 
+**https://mastodon.social/@key_of_dreams**
+
+**https://bsky.app/profile/keyofdreams.bsky.social**
+
 ![key of dreams](example.png)
 
-this is a bot that generates images and posts them to mastodon ~~and twitter~~. it's written in [typescript](https://www.typescriptlang.org/) and runs on [node.js](http://nodejs.org/).
+this is a bot that generates images and posts them to mastodon and ~~twitter~~ bsky. it's written in [typescript](https://www.typescriptlang.org/) and runs on [node.js](http://nodejs.org/).
 
 you can run it on your computer and even remix it into something new! you'll need node and git installed. if you install node manually, you should match the node version listed in [the `.node-version`](.node-version) file — but instead of installing node directly i recommend using [fnm](https://github.com/Schniz/fnm), which can automatically handle installing and switching node versions by detecting `.node-version` files.
 
@@ -23,8 +27,11 @@ running `pnpm dev` will generate an image and save it to a file on your computer
 if you clone the repository you can run your own remixed version that posts to mastodon using github actions too! no need to edit the workflow file — you'll just need to set some environment variables in the github repository settings:
 
 - `MASTODON_TOKEN`: a Mastodon user API token (required)
-- `MASTODON_SERVER`: the instance to which API calls should be made (usually where the bot user lives.) (default: https://botsin.space/)
+- `BSKY_USERNAME`: the bot's username on Bluesky
+- `BSKY_PASSWORD`: the app password for the bot's account on Bluesky
 - `RESOURCE_DIR`: the directory to search for image and font data. (default: the images already checked in to the repo.)
+
+additionally, `MASTODON_SERVER` (hardcoded in [src/env.ts](src/env.ts)) controls the mastodon instance to which API calls should be made (usually where the bot user lives.)
 
 this bot uses [dotenv](https://github.com/motdotla/dotenv), so if you're testing things locally, you can stick any of the above environment variables in a file named `.env` in the project root. (it's gitignored, so there's no risk of accidentally committing private API tokens you put in there.)
 
